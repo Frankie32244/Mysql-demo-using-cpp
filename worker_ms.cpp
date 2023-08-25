@@ -103,7 +103,7 @@ void DB_worker::addRecord()
     }
     return;
 }
-// sql statement : DELETE FROM `stu` WHERE ID = '001';
+// sql statement : DELETE FROM `workers` WHERE ID = '001';
 void DB_worker::deleteRecord()
 {
     std::cout << "Please choose to delete which one (enter " << column[0] << "): ";
@@ -117,7 +117,7 @@ void DB_worker::deleteRecord()
         printf("Deleting failture\n (%s)\n", mysql_error(conn));
     }
 }
-// sql statement : SELECT * FROM `stu` WHERE SEX_ = F;
+// sql statement : SELECT * FROM `workers` WHERE SEX_ = F;
 void DB_worker::searchRecord()
 {
     std::cout << "Please choose a  searching item:\n";
@@ -154,7 +154,7 @@ void DB_worker::searchRecord()
         }
     }
 }
-// sql statement : update stu set id = 001 where name = 'paul';
+// sql statement : update workers set id = 001 where name = 'paul';
 void DB_worker::modifyRecord()
 {   
     char choice;
@@ -178,7 +178,7 @@ void DB_worker::modifyRecord()
     }
 
 }
-// sql statement : select * from stu;
+// sql statement : select * from workers;
 void DB_worker::showAllRecord()
 {   
     MYSQL_RES* res = NULL;
