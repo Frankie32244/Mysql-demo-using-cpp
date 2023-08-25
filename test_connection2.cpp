@@ -3,15 +3,16 @@
 #include<mysql/mysql.h>
 #include<string.h> 
 
+// test connection and get all the data from mysql database 
 int main(){
-    // mysql 句柄
+    // mysql init
     MYSQL* mysql_ = mysql_init(NULL);
-    // 初始化 句柄
+    // mysql init
     mysql_init(mysql_);
 
     int timeout = 3;
 
-    // 超时时间设置为3秒
+    // set timeout = 3 
     if(mysql_ !=NULL){
         mysql_options(mysql_ ,MYSQL_OPT_CONNECT_TIMEOUT,(const char *)&timeout);
         mysql_options(mysql_ ,MYSQL_OPT_READ_TIMEOUT,(const char *)&timeout);
@@ -20,13 +21,13 @@ int main(){
 
 
     const char host_name[20] = "localhost";
-    const char user_name[20] = "root";
-    const char user_password[20] = "ledgerheath";
-    const char server_name[20] = "ledger";
+    const char user_name[20] = "root";                   // user_name 
+    const char user_password[20] = "ledgerheath";       // user_password
+    const char server_name[20] = "ledger";             // server_name
     unsigned short host_port = 3306;
 
     int row_lines = 0;
-    char sqlText[100] = "";
+    char sqlText[100] = "";                        // sql text example: select * from stu; 
     MYSQL_RES* res = NULL;
     MYSQL_FIELD* fd = NULL;
     MYSQL_ROW row;
@@ -40,19 +41,19 @@ int main(){
 
         mysql_close(mysql_);
     }
-    else{
+    else{  // connecting mysql success !!
         puts("Connecting database success!!\n");
         sprintf(sqlText,"select * from %s ","stu");
         printf("%s\n",sqlText);
 
-        if(!mysql_query(mysql_,sqlText)){
+        if(!mysql_query(mysql_,sqlText)){         // excute mysqlText
             res = mysql_store_result(mysql_);
             row_lines = (int)mysql_num_rows(res);
 
             printf("Query : %s \n ",sqlText);
             printf("%d records found:\n",row_lines);
 
-            //输出各字段名,也就是表格的第一行
+            //print field name 
             for( ; fd = mysql_fetch_field(res);){
                 printf("%-*s",50/mysql_num_fields(res),fd->name);
             }
@@ -62,12 +63,12 @@ int main(){
             puts("");
 
 
-            //打印获取的数据
-            MYSQL_ROW row; //一个行数据的类型安全(type-safe)的表示
-            while (row = mysql_fetch_row(res)) {    //获取下一行
+            
+            MYSQL_ROW row; 
+            while (row = mysql_fetch_row(res)) {  
                 for(int i=0; i<mysql_num_fields(res); i++)
                     printf("%-*s",50/mysql_num_fields(res),row[i]);
-                puts("");
+                puts("");                    // line break
             }
             //print like this-->
             // 121031323 Lori      m         21        cs        

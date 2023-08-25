@@ -8,31 +8,31 @@
 #include<cstring>
 
 
-
+// show star lines like : ☆☆☆☆☆☆☆☆☆☆☆☆☆☆
 void show_star_lines(){
     for (int j = 0; j < 65; j++){
         std::cout << "☆";
     }
 }
-
+// constructor
 DB_worker::DB_worker(const char* tb){
 
     strcpy(tableName,tb);
-    // when createConnection() returning 0;
+    // when createConnection() return 0;
     if(!createConnection()){
         std::cout<<"Database connected failed!Please check later and then try to connect"<<std::endl;
         system("pause");
         exit(-1);
     }
 }
-
+// destructor
 DB_worker::~DB_worker(){
     
     mysql_free_result(res);   // free mysql result
     mysql_close(conn);        // close mysql 
 
 }
-
+// show Menu
 void DB_worker::showMenu(){
     char c = 1;
     while (c != '0') {
@@ -75,7 +75,14 @@ void DB_worker::showMenu(){
         std::cout << std::endl;
     }
 }
-// sql : INSERT INTO `workers` VALUES ('001', 'A', 'M', '1993.2', '1', 'Bacherlor', 'manual', 'Shanghai', '010-1111111');
+
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------sql statements add,delete,modify,search,show all records---------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+
+
+// sql statement : INSERT INTO `workers` VALUES ('001', 'A', 'M', '1993.2', '1', 'Bacherlor', 'manual', 'Shanghai', '010-1111111');
 void DB_worker::addRecord()
 {
     sprintf(query, "insert into %s values ('", tableName);
@@ -89,28 +96,28 @@ void DB_worker::addRecord()
         strcat(query, info[i]);
     }
     strcat(query, "')");
-    if (mysql_query(conn, query)) {     //执行SQL语句
+    if (mysql_query(conn, query)) {     // excute sql text 
         printf("Adding failed! (%s)\n", mysql_error(conn));
     } else {
         puts("Adding success!!\n");
     }
     return;
 }
-// sql: DELETE FROM `stu` WHERE ID = '001';
+// sql statement : DELETE FROM `stu` WHERE ID = '001';
 void DB_worker::deleteRecord()
 {
     std::cout << "Please choose to delete which one (enter " << column[0] << "): ";
     std::cin >> info[0];
     sprintf(query, "delete from %s where %s='%s'", tableName,column[0], info[0]);
 
-    if (!mysql_query(conn,query)){
+    if (!mysql_query(conn,query)){     // excute sql text
         puts("Deleting success!!!\n");
     }
     else{
         printf("Deleting failture\n (%s)\n", mysql_error(conn));
     }
 }
-// sql: SELECT * FROM `stu` WHERE SEX_ = F;
+// sql statement : SELECT * FROM `stu` WHERE SEX_ = F;
 void DB_worker::searchRecord()
 {
     std::cout << "Please choose a  searching item:\n";
@@ -126,12 +133,12 @@ void DB_worker::searchRecord()
         sprintf(query, "select * from %s where %s='%s'",tableName, column[c - 49], info[0]);
         mysql_query(conn,query);
 
-        res = mysql_store_result(conn);
+        res = mysql_store_result(conn);          // excute mysql text and restore the resulut into res 
         int row_lines = (int)mysql_num_rows(res);
         MYSQL_FIELD* fd = NULL;
         MYSQL_ROW row;
         for( ; fd = mysql_fetch_field(res);){
-            printf("%-10s\t",fd->name);     //%-10s   左对齐并且占10个位置
+            printf("%-10s\t",fd->name);     //%-10s   left-align and 10 characters
         }
         //print like this -->
         //(Sno             Sname           Ssex            Sage            Sdept )
@@ -139,19 +146,20 @@ void DB_worker::searchRecord()
         puts("");
 
 
-        //打印获取的数据
-        while (row = mysql_fetch_row(res)) {    //获取下一行
+        //show the data 
+        while (row = mysql_fetch_row(res)) {    //get the next row 
             for(int i=0; i<mysql_num_fields(res); i++)
                 printf("%-10s\t",row[i]);
             puts("");
         }
     }
 }
+// sql statement : update stu set id = 001 where name = 'paul';
 void DB_worker::modifyRecord()
 {   
     char choice;
-    char temp[20];               // char* temp doesn't work
-    char id [10];                // id* doesn't work
+    char temp[20];               // bug error : char* temp doesn't work
+    char id [10];                // bug error : id* doesn't work
     std::cout<<"Please enter the Id"<<std::endl;
     std::cin >> id;
     for(int i = 0; i < num_fields; i++)
@@ -162,7 +170,6 @@ void DB_worker::modifyRecord()
     std::cout<<"please enter the updated attribute:";
     std::cin>>temp;
 
-    // std::cout<<"temp= " << temp<<"ID="<<id<<"choice = "<<choice;
     if(choice > '0' && choice < '1' + num_fields){
         std::cout<<"Please enter the attribute you wanna update"<<std::endl;
         sprintf(query,"update %s set %s='%s' where %s=%s",tableName,column[choice-49],temp,column[0],id);
@@ -171,7 +178,7 @@ void DB_worker::modifyRecord()
     }
 
 }
-
+// sql statement : select * from stu;
 void DB_worker::showAllRecord()
 {   
     MYSQL_RES* res = NULL;
@@ -187,7 +194,7 @@ void DB_worker::showAllRecord()
     printf("%d records found:\n",row_lines);
     puts("");
     for( ; fd = mysql_fetch_field(res);){
-        printf("%-10s\t",fd->name);     //%-10s   左对齐并且占10个位置
+        printf("%-10s\t",fd->name);     //%-10s   left-align 10 characters
     }
     //print like this -->
     //(Sno             Sname           Ssex            Sage            Sdept )
@@ -195,15 +202,20 @@ void DB_worker::showAllRecord()
     puts("");
 
 
-    //打印获取的数据
-    while (row = mysql_fetch_row(res)) {    //获取下一行
+    //print the date 
+    while (row = mysql_fetch_row(res)) {    //get next row
         for(int i=0; i<mysql_num_fields(res); i++)
             printf("%-10s\t",row[i]);
         puts("");
     }
     
 }
-//连接数据库
+
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------connect mysql database ---------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+// connect mysql 
 bool DB_worker::createConnection()
 {
     int result = 1;
@@ -213,26 +225,24 @@ bool DB_worker::createConnection()
         result = 0;
     } else {
         printf("Connected successful\n");
-        int timeout =  30;      //设置查询超时时长
+        int timeout =  30;      //set timeout = 30 
         if (conn != NULL) {
-            //设置链接超时时间.
+            // set connect timeout = 30 
             mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, (const char *)&timeout);
-            //设置查询数据库(select)超时时间
+            // set read timeout = 30 
             mysql_options(conn, MYSQL_OPT_READ_TIMEOUT, (const char *)&timeout);
-            //设置写数据库(update,delect,insert,replace等)的超时时间。
+            // set write timeout = 30 
             mysql_options(conn, MYSQL_OPT_WRITE_TIMEOUT, (const char *)&timeout);
         }
 
-        mysql_query(conn, "set names 'GBK'"); //设置字符集，防止中文无法正常显示
+        mysql_query(conn, "set names 'GBK'"); 
         sprintf(query, "select * from %s ", tableName);
         mysql_query(conn, query);
 
         res = mysql_store_result(conn);
-        //必须对返回的指针进行校验，否则如果没有这个表，会导致程序崩溃！！
-        //必须养成校验返回值的习惯，特别是对返回的是指针的情况
+
         if (res != NULL) {
             num_fields = mysql_num_fields(res);
-            //获取各字段的表头名称
             for (int i = 0; i < num_fields; i++){
                 strcpy(column[i], mysql_fetch_field(res)->name);
             }

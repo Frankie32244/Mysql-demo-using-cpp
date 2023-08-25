@@ -2,9 +2,9 @@
 #include<stdlib.h>
 #include<mysql/mysql.h>
 
-
+// test mysql connection only
 int main(){
-    //初始化mysqk 链接
+    //init mysql link_
     MYSQL* link_ = mysql_init(NULL);
 
     int timeout = 3;
@@ -20,9 +20,9 @@ int main(){
     }
 
     const char* host_name = "localhost";
-    const char* user_name = "root";
-    const char* user_password = "ledgerheath";
-    const char* server_name = "ledger";
+    const char* user_name = "root";             // user_name 
+    const char* user_password = "ledgerheath";  // user_password
+    const char* server_name = "ledger";         // server_name
     unsigned short host_port = 3306;
 
     if(!mysql_real_connect(link_,host_name,user_name,user_password,server_name,host_port,NULL,0)){

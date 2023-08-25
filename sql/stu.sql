@@ -1,7 +1,7 @@
 ﻿/*
 Navicat MySQL Data Transfer
 
-Source Server         : 测试1
+Source Server         : test1
 Source Server Version : 50616
 Source Host           : localhost:3306
 Source Database       : test

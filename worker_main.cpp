@@ -4,7 +4,7 @@
 
 int main(){
     
-    DB_worker workers("workers");     // 创建成功则go on ,失败则退出程序
+    DB_worker workers("workers");     // create class workers
     workers.showAllRecord();
     workers.showMenu();
 
